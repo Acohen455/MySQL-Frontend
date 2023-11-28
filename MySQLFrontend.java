@@ -27,21 +27,7 @@
  */
 
 
-/*
- * 
- * TODO (FOR GITHUB PUBLISHING)
- * 
- * 
- * Allow user to enter connection location manually (WORKING ON NOW
- * Implement multiple-schema functionality? 
- *		Possibly implement a schema selection panel once connected 
- *			Can pull schema from the database info/metadata
- * 
- * 
- * 
- * 
- * 
- */
+
 
 
 import java.awt.CardLayout;
@@ -159,29 +145,12 @@ public class MySQLFrontend {
 		
 		
 		//strings for connecting to the database
-		//for now these are hardcoded, later I'll attempt to make these user entered
-		//TODO allow user input for these values
-		
-		//DEPRECATED HARDCODE
-		//String url = "jdbc:mysql://localhost:3306/my_guitar_shop";
-		//String username = "root";
-		//String password = "password";
-		
-		//default value connects to localhost
+		//these will be filled in later
+
 		String url = null;
 		String username = null;
 		String password = null;
-		
-		//connector declaration
 
-		
-		
-		
-		
-		
-		
-		
-		
 
 		//setting up the frame
 		frame = new JFrame();
@@ -313,8 +282,8 @@ public class MySQLFrontend {
 				
 				//stringbuilder for creating the URL
 				//I'm opting to not specify a schema in the URL, instead connecting directly
-				//TODO: Allow for multiple schema?
-				//TODO: Make a schema selection window later? -- could be good after successful connection
+				//after connection, the available databases will be retrieved
+				//the user will be prompted to select a database, then a new URL will be built
 				StringBuilder urlBuilder = new StringBuilder();
 				
 				
@@ -680,22 +649,7 @@ public class MySQLFrontend {
 				
 				
 				
-				
-				
-				/*
-				 * 
-				 * CODE FOR DATABASE CONNECTIVITY
-				 * 
-				 * Database connectivity code is here so a connection successful message can be added to the cardlayout
-				 * 
-				 * 
-				 * TODO: Get user data for database connection
-				 * TODO: Error check the url before connecting
-				 * TODO: Add functionality to tell the user wrong username/password entered
-				 * 
-				 * 
-				 */
-				
+
 				
 				
 				 try {
@@ -733,11 +687,11 @@ public class MySQLFrontend {
 						try {
 							schemaView(frame, cardPanel, cardLayout, urlBuilder, username, password);
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							errorPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
 						}
 					} else {
-						//TODO: when taking user input, change this to pop an error message and reprompt for database details
+						//if there is an error, close the application
+						//the error pop up is handled in the try catch block for the error, so no error processing necessary here
 						closeApplication(frame);
 					}
 				});
@@ -877,7 +831,6 @@ public class MySQLFrontend {
 					stmt = con.createStatement();
 					stmt.execute(delSchemaBuilder.toString());
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(frame, e1.toString());
 				}
 				//get a result set to pass to the edit table method
@@ -1025,8 +978,6 @@ public class MySQLFrontend {
 				
 				
 				
-				//TODO: Hook the DLM into a MySQL Database
-				
 				// DLM lets us populate the list as necessary
 				DefaultListModel listPopulator = new DefaultListModel();
 				
@@ -1100,7 +1051,6 @@ public class MySQLFrontend {
 							ResultSet rs = stmt.executeQuery("SELECT * FROM " + selectedTable);
 							editTableView(frame, cardPanel, cardLayout, selectedTable, rs, idealSize);
 							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
 								errorPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
 							}
 						} else {
@@ -1507,7 +1457,6 @@ public class MySQLFrontend {
 							tablePane.setPreferredSize(null);
 							tableView(frame, cardPanel, cardLayout);
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							errorPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
 						}
 					}
@@ -1705,7 +1654,6 @@ public class MySQLFrontend {
 		List<ColumnInformation> columnList = new LinkedList<ColumnInformation>();
 		
 		//listener for add field button
-		//TODO: Create a dialog to prompt for column data type along with size
 		addFieldButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//pop up a dialogue box to prompt for input and a dialogue for input type
@@ -1798,7 +1746,6 @@ public class MySQLFrontend {
 					fieldsPane.setPreferredSize(null);
 					tableView(frame, cardPanel, cardLayout);
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					errorPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
 				}
 			}
@@ -1888,8 +1835,6 @@ public class MySQLFrontend {
 	//https://www.w3schools.com/mysql/mysql_datatypes.asp
 	public static String getSize(String selectedDataType){
 		String sizeHolder = "-1";
-		
-		//TODO handle decimal?
 		if (selectedDataType.equalsIgnoreCase("DECIMAL")) {
 			sizeHolder = "65";
 		} else if (selectedDataType.equalsIgnoreCase("FLOAT")) {
